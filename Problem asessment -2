@@ -1,0 +1,58 @@
+python
+Copy code
+import psutil
+import logging
+from datetime import datetime
+
+# Set up logging
+logging.basicConfig(filename='system_health.log', level=logging.INFO)
+
+# Define thresholds
+CPU_THRESHOLD = 80
+MEMORY_THRESHOLD = 80
+DISK_THRESHOLD = 80
+
+def log_health_status():
+    # Check CPU usage
+    cpu_usage = psutil.cpu_percent()
+    if cpu_usage > CPU_THRESHOLD:
+        logging.warning(f"{datetime.now()} - CPU usage is above threshold: {cpu_usage}%")
+
+    # Check memory usage
+    memory = psutil.virtual_memory()
+    if memory.percent > MEMORY_THRESHOLD:
+        logging.warning(f"{datetime.now()} - Memory usage is above threshold: {memory.percent}%")
+
+    # Check disk usage
+    disk = psutil.disk_usage('/')
+    if disk.percent > DISK_THRESHOLD:
+        logging.warning(f"{datetime.now()} - Disk usage is above threshold: {disk.percent}%")
+
+    # Check running processes
+    processes = len(psutil.pids())
+    logging.info(f"{datetime.now()} - Number of running processes: {processes}")
+
+if __name__ == "__main__":
+    log_health_status()
+
+python
+Copy code
+import requests
+from datetime import datetime
+
+# Define the application URL
+APPLICATION_URL = "http://your_application_url.com"
+
+def check_application_health(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print(f"{datetime.now()} - Application is UP (Status Code: {response.status_code})")
+        else:
+            print(f"{datetime.now()} - Application is DOWN (Status Code: {response.status_code})")
+    except requests.exceptions.RequestException as e:
+        print(f"{datetime.now()} - Application is DOWN (Error: {e})")
+
+if __name__ == "__main__":
+    check_application_health(APPLICATION_URL)
+
